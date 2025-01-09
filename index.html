@@ -6,6 +6,61 @@
     <title>Chip's Algorithm Visualiser</title>
   </head>
   <body>
-    Insert Cool Algorithms!
+    <div class="app-container">
+      <div class="app-header">
+        <h1>Chip's Algorithm Visualiser</h1>
+        <p>Learn and play with a variety of differnt algorithms!</p>
+      </div>
+
+      <div class="control-panel">
+        <select id="algorithm-select" class="input-field">
+          <option value="bubble">Bubble Sort</option>
+          <option value="merge">Merge Sort</option>
+          <option value="quick">Quick Sort</option>
+        </select>
+
+        <!-- Make bar amount a slider! -->
+        <input
+          type="number"
+          id="array-size"
+          class="input-field"
+          min="5"
+          max="50"
+          value="20"
+          placeholder="Array size"
+        />
+        <!-- Make animation speed a slider! -->
+        <input
+          type="number"
+          id="animation-speed"
+          class="input-field"
+          min="1"
+          max="1000"
+          value="100"
+          placeholder="Speed in ms"
+        />
+        <button id="generate-array" class="btn">Generate New Array</button>
+        <button id="start" class="btn">Start Sorting</button>
+      </div>
+
+      <div class="sorting-container">
+        <div class="bars-wrapper" id="bars-container"></div>
+      </div>
+
+      <div class="stats-section">
+        <div class="stats-item">
+          <h3>Time Complexity</h3>
+          <p id="time-complexity">O(n²)</p>
+        </div>
+        <div class="stats-item">
+          <h3>Comparisons</h3>
+          <p id="comparisons">0</p>
+        </div>
+        <div class="stats-item">
+          <h3>Swaps</h3>
+          <p id="swaps">0</p>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

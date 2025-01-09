@@ -9,3 +9,43 @@
   --sorting-state: #fbbf24;
   --sorted-state: #22c55e;
 }
+
+body {
+  margin: 0;
+  padding: 20px;
+  background-color: var(--light-mode-background);
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+/*
+    split control panel so the speed and array size
+    can be sliders with values either side
+*/
+
+.control-panel {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.sorting-container {
+  background: var(--light-mode-box-container);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  min-height: 300px;
+  margin-bottom: 25px;
+}
+
+/*
+    Sort bars js
+*/

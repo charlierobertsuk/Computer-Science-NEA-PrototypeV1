@@ -1,6 +1,6 @@
 :root {
-  --primary: #2563eb;
-  --secondary: #1e40af;
+  --button: #2563eb;
+  --button-pressed: #1e40af;
   --light-mode-box-container: #fff;
   --light-mode-background: #f1f1f1;
   --dark-mode-box-container: #212131;
@@ -73,14 +73,14 @@ body {
   padding: 5px 10px;
   border: none;
   border-radius: 4px;
-  background-color: var(--unsorted-state);
+  background-color: var(--button);
   color: white;
   cursor: pointer;
   font-size: 10px;
 }
 
 .btn:hover {
-  background-color: var(--secondary);
+  background-color: var(--button-pressed);
 }
 
 .btn:disabled {
@@ -111,5 +111,5 @@ body {
 
 .stats-item h3 {
   margin: 0 0 5px 0;
-  color: var(--unsorted-state);
+  color: black;
 }

@@ -128,6 +128,73 @@ class AlgorithmVisualiser {
   }
 }
 
+class LoadingScreen {
+  constructor(onComplete) {
+    this.bars = [];
+    this.container = document.getElementById("loading-bars");
+    this.onComplete = onComplete;
+    this.createBars();
+    this.animateBubbleSort();
+  }
+
+  createBars() {
+    this.bars = Array.from(
+      { length: 10 },
+      () => Math.floor(Math.random() * 250) + 10
+    );
+    this.bars.forEach((height) => {
+      const bar = document.createElement("div");
+      bar.className = "loading-bar";
+      bar.style.height = `${height}px`;
+      this.container.appendChild(bar);
+    });
+    this.barElements = Array.from(this.container.children);
+  }
+
+  async animateBubbleSort() {
+    for (let i = 0; i < this.bars.length; i++) {
+      for (let j = 0; j < this.bars.length - i - 1; j++) {
+        this.barElements[j].classList.add("is-comparing");
+        this.barElements[j + 1].classList.add("is-comparing");
+        await this.wait(50);
+
+        if (this.bars[j] > this.bars[j + 1]) {
+          this.swapBars(j, j + 1);
+        }
+
+        this.barElements[j].classList.remove("is-comparing");
+        this.barElements[j + 1].classList.remove("is-comparing");
+      }
+      this.barElements[this.bars.length - i - 1].classList.add("is-sorted");
+    }
+
+    this.hideLoadingScreen();
+  }
+
+  swapBars(i, j) {
+    const temp = this.bars[i];
+    this.bars[i] = this.bars[j];
+    this.bars[j] = temp;
+
+    this.barElements[i].style.height = `${this.bars[i]}px`;
+    this.barElements[j].style.height = `${this.bars[j]}px`;
+  }
+
+  wait(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async hideLoadingScreen() {
+    await new Promise((r) => setTimeout(r, 500)); // wait 500 ms so user can see the end result
+    document.getElementById("loading-screen").style.display = "none";
+    document.querySelector(".app-container").style.display = "block";
+    this.onComplete(); // Initialise the main visualiser
+    document.body.style.overflow = "auto";
+  }
+}
+
 window.addEventListener("load", () => {
-  new AlgorithmVisualiser();
+  new LoadingScreen(() => {
+    new AlgorithmVisualiser();
+  });
 });

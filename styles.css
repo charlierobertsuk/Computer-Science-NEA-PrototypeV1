@@ -46,6 +46,70 @@ body {
   margin-bottom: 25px;
 }
 
-/*
-    Sort bars js
-*/
+.bars-wrapper {
+  display: flex;
+  align-items: flex-end;
+  height: 250px;
+  gap: 2px;
+  padding: 10px;
+  justify-content: center;
+}
+
+.sorting-bar {
+  background-color: var(--unsorted-state);
+  width: 30px;
+  transition: height 0.25s ease;
+}
+
+.sorting-bar.is-comparing {
+  background-color: var(--sorting-state);
+}
+
+.sorting-bar.is-sorted {
+  background-color: var(--sorted-state);
+}
+
+.btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--unsorted-state);
+  color: white;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.btn:hover {
+  background-color: var(--secondary);
+}
+
+.btn:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.input-field {
+  padding: 5px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 10px;
+}
+
+.metrics-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.metric-item {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.metric-item h3 {
+  margin: 0 0 5px 0;
+  color: var(--unsorted-state);
+}

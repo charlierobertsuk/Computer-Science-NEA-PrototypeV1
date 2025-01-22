@@ -5,7 +5,7 @@ class AlgorithmVisualiser {
     this.isRunning = false;
     this.comparisons = 0;
     this.swaps = 0;
-    this.animationSpeed = 100;
+    this.animationSpeed = 1;
 
     // DOM elements
     this.barsContainer = document.getElementById("bars-container");
@@ -29,22 +29,41 @@ class AlgorithmVisualiser {
 
   generateArray() {
     const size = parseInt(this.arraySizeInput.value);
-    this.array = Array.from(
-      { length: size },
-      () => Math.floor(Math.random() * 250) + 10
-    );
+    const uniqueNumbers = new Set();
+
+    while (uniqueNumbers.size < size) {
+      const ranNum = Math.floor(Math.random() * 250) + 10;
+      uniqueNumbers.add(ranNum);
+    }
+
+    this.array = Array.from(uniqueNumbers);
     this.renderBars();
     this.reset();
   }
 
   renderBars() {
     this.barsContainer.innerHTML = "";
-    this.bars = this.array.map((value) => {
+    this.bars = [];
+    this.numbers = [];
+
+    this.array.forEach((value) => {
+      const barContainer = document.createElement("div");
+      barContainer.className = "bar-container";
+
       const bar = document.createElement("div");
       bar.className = "sorting-bar";
       bar.style.height = `${value}px`;
-      this.barsContainer.appendChild(bar);
-      return bar;
+
+      const number = document.createElement("div");
+      number.className = "number-label";
+      number.textContent = value;
+
+      barContainer.appendChild(bar);
+      barContainer.appendChild(number);
+      this.barsContainer.appendChild(barContainer);
+
+      this.bars.push(bar);
+      this.numbers.push(number);
     });
   }
 
@@ -101,7 +120,16 @@ class AlgorithmVisualiser {
     this.bars[i].style.height = `${this.array[i]}px`;
     this.bars[j].style.height = `${this.array[j]}px`;
 
+    this.numbers[i].textContent = this.array[i];
+    this.numbers[j].textContent = this.array[j];
+
+    this.numbers[i].classList.add("number-transition");
+    this.numbers[j].classList.add("number-transition");
+
     await this.wait();
+
+    this.numbers[i].classList.remove("number-transition");
+    this.numbers[j].classList.remove("number-transition");
   }
 
   wait() {

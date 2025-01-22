@@ -5,7 +5,7 @@ class AlgorithmVisualiser {
     this.isRunning = false;
     this.comparisons = 0;
     this.swaps = 0;
-    this.animationSpeed = 1;
+    this.animationSpeed = 100;
 
     // DOM elements
     this.barsContainer = document.getElementById("bars-container");

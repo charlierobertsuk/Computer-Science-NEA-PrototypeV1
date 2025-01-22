@@ -1,4 +1,5 @@
 class AlgorithmVisualiser {
+  // Defines properties and methods of objects without having to do a bunch of it manualy
   constructor() {
     this.array = [];
     this.bars = [];
@@ -15,7 +16,7 @@ class AlgorithmVisualiser {
     this.generateButton = document.getElementById("generate-array");
     this.startButton = document.getElementById("start");
 
-    // Bind event listeners
+    // Event listeners
     this.generateButton.addEventListener("click", () => this.generateArray());
     this.startButton.addEventListener("click", () => this.startSorting());
     this.speedInput.addEventListener(
@@ -23,16 +24,17 @@ class AlgorithmVisualiser {
       (e) => (this.animationSpeed = e.target.value)
     );
 
-    // Initialise
+    // Init
     this.generateArray();
   }
 
   generateArray() {
-    const size = parseInt(this.arraySizeInput.value);
-    const uniqueNumbers = new Set();
+    const size = parseInt(this.arraySizeInput.value); // parses a string into an intager for the size value
+    const uniqueNumbers = new Set(); // a set only contains unique values and removes duplicates
 
     while (uniqueNumbers.size < size) {
-      const ranNum = Math.floor(Math.random() * 250) + 10;
+      // while the list has been shortened by duplicates then generate new numbers
+      const ranNum = Math.floor(Math.random() * 250) + 10; // Should be random values between 10 and 260
       uniqueNumbers.add(ranNum);
     }
 
@@ -52,12 +54,13 @@ class AlgorithmVisualiser {
 
       const bar = document.createElement("div");
       bar.className = "sorting-bar";
-      bar.style.height = `${value}px`;
+      bar.style.height = `${value}px`; // height of the bar is the same as the value in the array
 
       const number = document.createElement("div");
       number.className = "number-label";
-      number.textContent = value;
+      number.textContent = value; // visualises the number for the users benifit
 
+      // Adds all the bar container content
       barContainer.appendChild(bar);
       barContainer.appendChild(number);
       this.barsContainer.appendChild(barContainer);
@@ -133,10 +136,12 @@ class AlgorithmVisualiser {
   }
 
   wait() {
+    // waits at the set animation speed time
     return new Promise((resolve) => setTimeout(resolve, this.animationSpeed));
   }
 
   reset() {
+    // resets all changed values
     this.isRunning = false;
     this.comparisons = 0;
     this.swaps = 0;
@@ -150,6 +155,7 @@ class AlgorithmVisualiser {
   }
 
   finishSorting() {
+    // stops when done sorting
     this.isRunning = false;
     this.generateButton.disabled = false;
     this.bars.forEach((bar) => bar.classList.add("is-sorted"));
@@ -157,6 +163,7 @@ class AlgorithmVisualiser {
 }
 
 class LoadingScreen {
+  // awsome loading screen simulates a 10 bar bubble sort whilst the site loads
   constructor(onComplete) {
     this.bars = [];
     this.container = document.getElementById("loading-bars");
@@ -222,6 +229,7 @@ class LoadingScreen {
 }
 
 window.addEventListener("load", () => {
+  // loads loading screen and content when site is loading
   new LoadingScreen(() => {
     new AlgorithmVisualiser();
   });

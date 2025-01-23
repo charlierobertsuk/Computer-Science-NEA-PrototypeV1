@@ -2,6 +2,8 @@ class AlgorithmVisualiser {
   constructor() {
     this.array = [];
     this.bars = [];
+    this.originalArray = [];
+    this.numbers = [];
     this.isRunning = false;
     this.comparisons = 0;
     this.swaps = 0;
@@ -13,17 +15,18 @@ class AlgorithmVisualiser {
     this.arraySizeInput = document.getElementById("array-size");
     this.speedInput = document.getElementById("animation-speed");
     this.generateButton = document.getElementById("generate-array");
+    this.restoreButton = document.getElementById("restore-array");
     this.startButton = document.getElementById("start");
 
     // Event listeners
     this.generateButton.addEventListener("click", () => this.generateArray());
     this.startButton.addEventListener("click", () => this.startSorting());
+    this.restoreButton.addEventListener("click", () => this.restoreArray());
     this.speedInput.addEventListener(
       "change",
       (e) => (this.animationSpeed = e.target.value)
     );
 
-    // Init
     this.generateArray();
   }
 
@@ -37,8 +40,25 @@ class AlgorithmVisualiser {
     }
 
     this.array = Array.from(uniqueNumbers);
+    this.originalArray = [...this.array];
     this.renderBars();
     this.reset();
+  }
+
+  restoreArray() {
+    if (!this.isRunning) {
+      this.array = [...this.originalArray];
+      this.renderBars();
+      this.reset();
+      this.restoreButton.disabled = true;
+    }
+  }
+
+  finishSorting() {
+    this.isRunning = false;
+    this.generateButton.disabled = false;
+    this.bars.forEach((bar) => bar.classList.add("is-sorted"));
+    this.restoreButton.disabled = false;
   }
 
   renderBars() {
@@ -207,15 +227,10 @@ class AlgorithmVisualiser {
     document.getElementById("swaps").textContent = "0";
     this.startButton.disabled = false;
     this.generateButton.disabled = false;
+    this.restoreButton.disabled = true;
     this.bars.forEach((bar) =>
       bar.classList.remove("is-comparing", "is-sorted")
     );
-  }
-
-  finishSorting() {
-    this.isRunning = false;
-    this.generateButton.disabled = false;
-    this.bars.forEach((bar) => bar.classList.add("is-sorted"));
   }
 }
 

@@ -113,6 +113,7 @@ class AlgorithmVisualiser {
   }
 
   async mergeSort(left, right) {
+    
     if (left < right) {
       const mid = Math.floor((left + right) / 2);
       await this.mergeSort(left, mid);
@@ -122,45 +123,41 @@ class AlgorithmVisualiser {
   }
 
   async merge(left, mid, right) {
-    // very broken - pls fix!!
-    const leftArr = this.array.slice(left, mid + 1);
-    const rightArr = this.array.slice(mid + 1, right + 1);
+  const leftArr = this.array.slice(left, mid + 1);
+  const rightArr = this.array.slice(mid + 1, right + 1);
 
-    let i = 0,
-      j = 0,
-      k = left;
+  let i = 0, j = 0, k = left;
 
-    while (i < leftArr.length && j < rightArr.length) {
-      this.bars[k].classList.add("is-comparing");
-      await this.wait();
+  while (i < leftArr.length && j < rightArr.length) {
+    this.comparisons++;
+    document.getElementById("comparisons").textContent = this.comparisons;
 
-      this.comparisons++;
-      document.getElementById("comparisons").textContent = this.comparisons;
-
-      if (leftArr[i] <= rightArr[j]) {
-        await this.swap(k, left + i);
-        i++;
-      } else {
-        await this.swap(k, mid + 1 + j);
-        j++;
-      }
-
-      this.bars[k].classList.remove("is-comparing");
-      k++;
-    }
-
-    while (i < leftArr.length) {
-      await this.swap(k, left + i);
+    if (leftArr[i] <= rightArr[j]) {
+      this.array[k] = leftArr[i];
       i++;
-      k++;
-    }
-
-    while (j < rightArr.length) {
-      await this.swap(k, mid + 1 + j);
+    } else {
+      this.array[k] = rightArr[j];
       j++;
-      k++;
     }
+    k++;
   }
+
+  while (i < leftArr.length) {
+    this.array[k] = leftArr[i];
+    i++;
+    k++;
+  }
+
+  while (j < rightArr.length) {
+    this.array[k] = rightArr[j];
+    j++;
+    k++;
+  }
+
+  for (let p = left; p <= right; p++) {
+    this.bars[p].style.height = `${this.array[p]}px`;
+  }
+}
 
   async checkSorted(start, end) {
     for (let i = start + 1; i <= end; i++) {
@@ -286,10 +283,10 @@ class LoadingScreen {
   }
 
   async hideLoadingScreen() {
-    await new Promise((r) => setTimeout(r, 500)); // wait 500 ms so user can see the end result
+    await new Promise((r) => setTimeout(r, 500)); // wait so user can see the end result
     document.getElementById("loading-screen").style.display = "none";
     document.querySelector(".app-container").style.display = "block";
-    this.onComplete(); // Initialise the main visualiser
+    this.onComplete();
     document.body.style.overflow = "auto";
   }
 }

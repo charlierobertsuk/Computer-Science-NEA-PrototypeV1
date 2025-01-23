@@ -129,7 +129,7 @@ class AlgorithmVisualiser {
       j = 0,
       k = left;
 
-    // Move bars upward
+    // Move bars upward :O
     tempBars.forEach((bar) => (bar.style.transform = "translateY(-10px)"));
     await this.wait();
 
@@ -193,6 +193,44 @@ class AlgorithmVisualiser {
     this.numbers[j].textContent = this.array[j];
 
     await this.wait();
+  }
+
+  async quickSort(low, high) {
+    if (low < high) {
+      const pivotIndex = await this.partition(low, high);
+
+      await this.quickSort(low, pivotIndex - 1);
+      await this.quickSort(pivotIndex + 1, high);
+    } else if (low === high) {
+      this.bars[low].classList.add("is-sorted");
+    }
+  }
+
+  async partition(low, high) {
+    const pivot = this.array[high];
+    this.bars[high].classList.add("is-pivot");
+    let i = low - 1;
+
+    for (let j = low; j < high; j++) {
+      this.bars[j].classList.add("is-comparing");
+      await this.wait();
+
+      this.comparisons++;
+      document.getElementById("comparisons").textContent = this.comparisons;
+
+      if (this.array[j] < pivot) {
+        i++;
+        await this.swap(i, j);
+      }
+
+      this.bars[j].classList.remove("is-comparing");
+    }
+
+    await this.swap(i + 1, high);
+    this.bars[high].classList.remove("is-pivot");
+    this.bars[i + 1].classList.add("is-sorted");
+
+    return i + 1;
   }
 
   wait() {

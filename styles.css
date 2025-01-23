@@ -58,8 +58,8 @@ body {
 
 .sorting-bar {
   background-color: var(--unsorted-state);
-  width: 30px;
-  transition: height 0.25s ease;
+  width: 35px;
+  transition: height 0.25s ease, transform 0.5 ease;
 }
 
 .sorting-bar.is-comparing {
@@ -147,4 +147,11 @@ body {
 
 .loading-bar.is-sorted {
   background-color: var(--sorted-state);
+}
+
+.number-label {
+  text-align: center;
+  font-size: 10px;
+  margin-top: 5px;
+  color: black;
 }

@@ -1,5 +1,4 @@
 class AlgorithmVisualiser {
-  // Defines properties and methods of objects without having to do a bunch of it manualy
   constructor() {
     this.array = [];
     this.bars = [];
@@ -29,12 +28,11 @@ class AlgorithmVisualiser {
   }
 
   generateArray() {
-    const size = parseInt(this.arraySizeInput.value); // parses a string into an intager for the size value
-    const uniqueNumbers = new Set(); // a set only contains unique values and removes duplicates
+    const size = parseInt(this.arraySizeInput.value);
+    const uniqueNumbers = new Set();
 
     while (uniqueNumbers.size < size) {
-      // while the list has been shortened by duplicates then generate new numbers
-      const ranNum = Math.floor(Math.random() * 250) + 10; // Should be random values between 10 and 260
+      const ranNum = Math.floor(Math.random() * 250) + 10;
       uniqueNumbers.add(ranNum);
     }
 
@@ -54,19 +52,18 @@ class AlgorithmVisualiser {
 
       const bar = document.createElement("div");
       bar.className = "sorting-bar";
-      bar.style.height = `${value}px`; // height of the bar is the same as the value in the array
+      bar.style.height = `${value}px`;
 
-      const number = document.createElement("div");
-      number.className = "number-label";
-      number.textContent = value; // visualises the number for the users benifit
+      const numberLabel = document.createElement("div");
+      numberLabel.className = "number-label";
+      numberLabel.textContent = value;
 
-      // Adds all the bar container content
       barContainer.appendChild(bar);
-      barContainer.appendChild(number);
+      barContainer.appendChild(numberLabel);
       this.barsContainer.appendChild(barContainer);
 
       this.bars.push(bar);
-      this.numbers.push(number);
+      this.numbers.push(numberLabel);
     });
   }
 
@@ -112,6 +109,75 @@ class AlgorithmVisualiser {
     }
   }
 
+  //NOTE: fix swaps on swaps counter, and colour on swaps
+  //NOTE: make values flash orang and grow slightly when sorting
+  async mergeSort(left, right) {
+    if (left < right) {
+      const mid = Math.floor((left + right) / 2);
+      await this.mergeSort(left, mid);
+      await this.mergeSort(mid + 1, right);
+      await this.merge(left, mid, right);
+    }
+  }
+
+  async merge(left, mid, right) {
+    const leftArr = this.array.slice(left, mid + 1);
+    const rightArr = this.array.slice(mid + 1, right + 1);
+    const tempBars = this.bars.slice(left, right + 1);
+
+    let i = 0,
+      j = 0,
+      k = left;
+
+    // Move bars upward
+    tempBars.forEach((bar) => (bar.style.transform = "translateY(-10px)"));
+    await this.wait();
+
+    while (i < leftArr.length && j < rightArr.length) {
+      this.bars[k].classList.add("is-comparing");
+      await this.wait();
+
+      this.comparisons++;
+      document.getElementById("comparisons").textContent = this.comparisons;
+
+      if (leftArr[i] <= rightArr[j]) {
+        this.array[k] = leftArr[i];
+        this.updateBar(k, left + i);
+        i++;
+      } else {
+        this.array[k] = rightArr[j];
+        this.updateBar(k, mid + 1 + j);
+        j++;
+      }
+      this.bars[k].classList.remove("is-comparing");
+      k++;
+    }
+
+    while (i < leftArr.length) {
+      this.array[k] = leftArr[i];
+      this.updateBar(k, left + i);
+      i++;
+      k++;
+    }
+
+    while (j < rightArr.length) {
+      this.array[k] = rightArr[j];
+      this.updateBar(k, mid + 1 + j);
+      j++;
+      k++;
+    }
+
+    // moves bars back to original pos
+    tempBars.forEach((bar) => (bar.style.transform = "translateY(0)"));
+    tempBars.forEach((bar) => bar.classList.add("is-sorted"));
+    await this.wait();
+  }
+
+  updateBar(index) {
+    this.bars[index].style.height = `${this.array[index]}px`;
+    this.numbers[index].textContent = this.array[index];
+  }
+
   async swap(i, j) {
     this.swaps++;
     document.getElementById("swaps").textContent = this.swaps;
@@ -126,22 +192,14 @@ class AlgorithmVisualiser {
     this.numbers[i].textContent = this.array[i];
     this.numbers[j].textContent = this.array[j];
 
-    this.numbers[i].classList.add("number-transition");
-    this.numbers[j].classList.add("number-transition");
-
     await this.wait();
-
-    this.numbers[i].classList.remove("number-transition");
-    this.numbers[j].classList.remove("number-transition");
   }
 
   wait() {
-    // waits at the set animation speed time
     return new Promise((resolve) => setTimeout(resolve, this.animationSpeed));
   }
 
   reset() {
-    // resets all changed values
     this.isRunning = false;
     this.comparisons = 0;
     this.swaps = 0;
@@ -149,13 +207,12 @@ class AlgorithmVisualiser {
     document.getElementById("swaps").textContent = "0";
     this.startButton.disabled = false;
     this.generateButton.disabled = false;
-    this.bars.forEach((bar) => {
-      bar.classList.remove("is-comparing", "is-sorted");
-    });
+    this.bars.forEach((bar) =>
+      bar.classList.remove("is-comparing", "is-sorted")
+    );
   }
 
   finishSorting() {
-    // stops when done sorting
     this.isRunning = false;
     this.generateButton.disabled = false;
     this.bars.forEach((bar) => bar.classList.add("is-sorted"));
@@ -163,7 +220,6 @@ class AlgorithmVisualiser {
 }
 
 class LoadingScreen {
-  // awsome loading screen simulates a 10 bar bubble sort whilst the site loads
   constructor(onComplete) {
     this.bars = [];
     this.container = document.getElementById("loading-bars");
@@ -220,16 +276,15 @@ class LoadingScreen {
   }
 
   async hideLoadingScreen() {
-    await new Promise((r) => setTimeout(r, 500)); // wait 500 ms so user can see the end result
+    await this.wait(500); // wait so user can see the end result
     document.getElementById("loading-screen").style.display = "none";
     document.querySelector(".app-container").style.display = "block";
-    this.onComplete(); // Initialise the main visualiser
+    this.onComplete();
     document.body.style.overflow = "auto";
   }
 }
 
 window.addEventListener("load", () => {
-  // loads loading screen and content when site is loading
   new LoadingScreen(() => {
     new AlgorithmVisualiser();
   });

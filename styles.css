@@ -8,6 +8,7 @@
   --unsorted-state: #2563eb;
   --sorting-state: #fbbf24;
   --sorted-state: #22c55e;
+  --pivot: #ef4444;
 }
 
 body {
@@ -59,7 +60,7 @@ body {
 .sorting-bar {
   background-color: var(--unsorted-state);
   width: 35px;
-  transition: height 0.25s ease, transform 0.5 ease;
+  transition: height 0.25s ease;
 }
 
 .sorting-bar.is-comparing {
@@ -154,4 +155,8 @@ body {
   font-size: 10px;
   margin-top: 5px;
   color: black;
+}
+
+.sorting-bar.is-pivot {
+  background-color: var(--pivot);
 }

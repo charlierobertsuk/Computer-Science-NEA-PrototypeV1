@@ -129,7 +129,7 @@ class AlgorithmVisualiser {
     }
   }
 
-  //NOTE: fix swaps on swaps counter, and colour on swaps
+  //NOTE: fix swaps on swaps counter, and colour on swaps (New Awaiting Swap Colour pls)
   //NOTE: make values flash orang and grow slightly when sorting
   async mergeSort(left, right) {
     if (left < right) {

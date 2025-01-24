@@ -13,58 +13,54 @@
     <div class="app-container">
       <div class="app-header">
         <h1>Very Awesome Algorithm Visualiser (VAAV)</h1>
-        <p>Cool algoriths and stuff</p>
+      </div>
+
+      <!-- Add a full screen feature (pc/tablet) esc or press x to exit -->
+      <div class="sorting-container">
+        <div class="bars-wrapper" id="bars-container"></div>
+        <div class="stats-section">
+          <div class="stats-item">
+            <h3>Comparisons</h3>
+            <p id="comparisons">0</p>
+          </div>
+          <div class="stats-item">
+            <h3>Swaps</h3>
+            <p id="swaps">0</p>
+          </div>
+        </div>
       </div>
 
       <div class="control-panel">
+        <div class="inputs">
+          <label for="input">Array Size</label>
+          <input
+            type="number"
+            id="array-size"
+            class="input-field"
+            min="5"
+            max="50"
+            value="20"
+            placeholder="Array size"
+          />
+          <label for="input">Speed</label>
+          <input
+            type="range"
+            id="animation-speed"
+            class="input-field"
+            min="1"
+            max="750"
+            value="100"
+            placeholder="Speed in ms"
+          />
+        </div>
         <select id="algorithm-select" class="input-field">
           <option value="bubble">Bubble Sort</option>
           <option value="merge">Merge Sort</option>
           <option value="quick">Quick Sort</option>
         </select>
-
-        <p>Array Size</p>
-        <input
-          type="number"
-          id="array-size"
-          class="input-field"
-          min="5"
-          max="50"
-          value="20"
-          placeholder="Array size"
-        />
-        <p>Speed</p>
-        <input
-          type="range"
-          id="animation-speed"
-          class="input-field"
-          min="1"
-          max="750"
-          value="100"
-          placeholder="Speed in ms"
-        />
         <button id="generate-array" class="btn">Generate New Array</button>
         <button id="start" class="btn">Start Sorting</button>
         <button id="restore-array" class="btn" disabled>Restore Array</button>
-      </div>
-
-      <div class="sorting-container">
-        <div class="bars-wrapper" id="bars-container"></div>
-      </div>
-
-      <div class="stats-section">
-        <div class="stats-item">
-          <h3>Time Complexity</h3>
-          <p id="time-complexity">O(n²)</p>
-        </div>
-        <div class="stats-item">
-          <h3>Comparisons</h3>
-          <p id="comparisons">0</p>
-        </div>
-        <div class="stats-item">
-          <h3>Swaps</h3>
-          <p id="swaps">0</p>
-        </div>
       </div>
     </div>
     <script src="script.js"></script>

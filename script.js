@@ -22,6 +22,7 @@ class AlgorithmVisualiser {
     this.generateButton.addEventListener("click", () => this.generateArray());
     this.startButton.addEventListener("click", () => this.startSorting());
     this.restoreButton.addEventListener("click", () => this.restoreArray());
+    window.addEventListener("resize", () => this.renderBars());
     this.speedInput.addEventListener(
       "change",
       (e) => (this.animationSpeed = e.target.value)
@@ -35,7 +36,7 @@ class AlgorithmVisualiser {
     const uniqueNumbers = new Set();
 
     while (uniqueNumbers.size < size) {
-      const ranNum = Math.floor(Math.random() * 250) + 10;
+      const ranNum = Math.floor(Math.random() * 99) + 1;
       uniqueNumbers.add(ranNum);
     }
 
@@ -66,17 +67,32 @@ class AlgorithmVisualiser {
     this.bars = [];
     this.numbers = [];
 
-    this.array.forEach((value) => {
+    const containerWidth = this.barsContainer.offsetWidth;
+    const minBarWidth = 20;
+    const maxBarWidth = 50;
+    const maxBars = Math.floor(containerWidth / minBarWidth);
+    const displayedArray = this.array.slice(0, maxBars);
+
+    displayedArray.forEach((value) => {
       const barContainer = document.createElement("div");
       barContainer.className = "bar-container";
 
       const bar = document.createElement("div");
       bar.className = "sorting-bar";
-      bar.style.height = `${value}px`;
+
+      const barWidth = Math.min(
+        Math.max(containerWidth / displayedArray.length - 2, minBarWidth),
+        maxBarWidth
+      );
+      bar.style.height = `${value * 2}px`;
+      bar.style.width = `${barWidth}px`;
 
       const numberLabel = document.createElement("div");
       numberLabel.className = "number-label";
-      numberLabel.textContent = value;
+      numberLabel.textContent = `${value}`;
+
+      const fontSize = Math.min(barWidth * 0.6, 18);
+      numberLabel.style.fontSize = `${Math.max(fontSize, 12)}px`;
 
       barContainer.appendChild(bar);
       barContainer.appendChild(numberLabel);
@@ -284,12 +300,12 @@ class LoadingScreen {
   createBars() {
     this.bars = Array.from(
       { length: 10 },
-      () => Math.floor(Math.random() * 250) + 10
+      () => Math.floor(Math.random() * 99) + 1
     );
     this.bars.forEach((height) => {
       const bar = document.createElement("div");
       bar.className = "loading-bar";
-      bar.style.height = `${height}px`;
+      bar.style.height = `${height * 2}px`;
       this.container.appendChild(bar);
     });
     this.barElements = Array.from(this.container.children);

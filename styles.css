@@ -54,7 +54,6 @@ body {
 .inputs input[type="number"] {
   width: 100%;
   font-size: 100px;
-
 }
 
 .inputs input[type="range"] {
@@ -78,16 +77,18 @@ body {
 .bars-wrapper {
   display: flex;
   align-items: flex-end;
-  height: 250px;
-  gap: 1px;
-  padding: 10px;
   justify-content: center;
+  height: 225px;
+  padding: 10px;
+  gap: 1px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
 }
 
 .sorting-bar {
   background-color: var(--unsorted-state);
-  width: 40px;
-  transition: height 0.25s ease;
+  transition: all 0.25s ease;
+  height: 200px;
 }
 
 .sorting-bar.is-comparing {

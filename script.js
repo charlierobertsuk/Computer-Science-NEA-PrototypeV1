@@ -345,16 +345,15 @@ class LoadingScreen {
   }
 
   async hideLoadingScreen() {
-    await this.wait(500); // wait so user can see the end result
+    await this.wait(500);
     document.getElementById("loading-screen").style.display = "none";
     document.querySelector(".app-container").style.display = "block";
-    this.onComplete();
-    document.body.style.overflow = "auto";
+    if (this.onComplete) this.onComplete(); // Ensure callback is actually called
   }
 }
 
-window.addEventListener("load", () => {
-  new LoadingScreen(() => {
+document.addEventListener("DOMContentLoaded", () => {
+  const loadingScreen = new LoadingScreen(() => {
     new AlgorithmVisualiser();
   });
 });

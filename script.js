@@ -294,6 +294,9 @@ class LoadingScreen {
     this.container = document.getElementById("loading-bars");
     this.onComplete = onComplete;
     this.createBars();
+  }
+
+  startAnimation() {
     this.animateBubbleSort();
   }
 
@@ -352,8 +355,7 @@ class LoadingScreen {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const loadingScreen = new LoadingScreen(() => {
-    new AlgorithmVisualiser();
-  });
+const loadingScreen = new LoadingScreen(() => {
+  new AlgorithmVisualiser();
 });
+loadingScreen.startAnimation();

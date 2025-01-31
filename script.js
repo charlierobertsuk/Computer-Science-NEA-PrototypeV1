@@ -355,7 +355,9 @@ class LoadingScreen {
   }
 }
 
-const loadingScreen = new LoadingScreen(() => {
+
+AlgorithmVisualiser();
+/* const loadingScreen = new LoadingScreen(() => {
   new AlgorithmVisualiser();
 });
-loadingScreen.startAnimation();
+loadingScreen.startAnimation(); */

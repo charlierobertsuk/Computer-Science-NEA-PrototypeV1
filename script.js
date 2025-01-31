@@ -356,8 +356,9 @@ class LoadingScreen {
 }
 
 
-AlgorithmVisualiser();
-/* const loadingScreen = new LoadingScreen(() => {
-  new AlgorithmVisualiser();
+document.addEventListener("DOMContentLoaded", () => {
+  const loadingScreen = new LoadingScreen(() => {
+    new AlgorithmVisualiser();
+  });
+  loadingScreen.startAnimation();
 });
-loadingScreen.startAnimation(); */

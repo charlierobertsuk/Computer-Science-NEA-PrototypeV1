@@ -145,8 +145,6 @@ class AlgorithmVisualiser {
     }
   }
 
-  //NOTE: fix swaps on swaps counter, and colour on swaps (New Awaiting Swap Colour pls)
-  //NOTE: make values flash orang and grow slightly when sorting
   async mergeSort(left, right) {
     if (left < right) {
       const mid = Math.floor((left + right) / 2);
@@ -165,7 +163,7 @@ class AlgorithmVisualiser {
       j = 0,
       k = left;
 
-    // Move bars upward :O
+    // Move bars upward
     tempBars.forEach((bar) => (bar.style.transform = "translateY(-10px)"));
     await this.wait();
 
@@ -210,7 +208,7 @@ class AlgorithmVisualiser {
   }
 
   updateBar(index) {
-    this.bars[index].style.height = `${this.array[index]}px`;
+    this.bars[index].style.height = `${this.array[index] * 2}px`;
     this.numbers[index].textContent = this.array[index];
   }
 
@@ -222,8 +220,8 @@ class AlgorithmVisualiser {
     this.array[i] = this.array[j];
     this.array[j] = temp;
 
-    this.bars[i].style.height = `${this.array[i]}px`;
-    this.bars[j].style.height = `${this.array[j]}px`;
+    this.bars[i].style.height = `${this.array[i] * 2}px`;
+    this.bars[j].style.height = `${this.array[j] * 2}px`;
 
     this.numbers[i].textContent = this.array[i];
     this.numbers[j].textContent = this.array[j];
@@ -283,7 +281,7 @@ class AlgorithmVisualiser {
     this.generateButton.disabled = false;
     this.restoreButton.disabled = true;
     this.bars.forEach((bar) =>
-      bar.classList.remove("is-comparing", "is-sorted")
+      bar.classList.remove("is-comparing", "is-sorted", "is-pivot")
     );
   }
 }
@@ -339,8 +337,8 @@ class LoadingScreen {
     this.bars[i] = this.bars[j];
     this.bars[j] = temp;
 
-    this.barElements[i].style.height = `${this.bars[i]}px`;
-    this.barElements[j].style.height = `${this.bars[j]}px`;
+    this.barElements[i].style.height = `${this.bars[i] * 2}px`;
+    this.barElements[j].style.height = `${this.bars[j] * 2}px`;
   }
 
   wait(ms) {
@@ -351,14 +349,25 @@ class LoadingScreen {
     await this.wait(500);
     document.getElementById("loading-screen").style.display = "none";
     document.querySelector(".app-container").style.display = "block";
-    if (this.onComplete) this.onComplete(); // Ensure callback is actually called
+    if (this.onComplete) this.onComplete();
   }
 }
 
+class AppInitializer {
+  constructor() {
+    this.loadingScreen = null;
+    this.visualiser = null;
+    this.init();
+  }
+
+  init() {
+    this.loadingScreen = new LoadingScreen(() => {
+      this.visualiser = new AlgorithmVisualiser();
+    });
+    this.loadingScreen.startAnimation();
+  }
+}
 
 document.addEventListener("DOMContentLoaded", () => {
-  const loadingScreen = new LoadingScreen(() => {
-    new AlgorithmVisualiser();
-  });
-  loadingScreen.startAnimation();
+  window.app = new AppInitializer();
 });

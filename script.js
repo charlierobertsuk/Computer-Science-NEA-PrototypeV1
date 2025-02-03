@@ -353,7 +353,7 @@ class LoadingScreen {
   }
 }
 
-class AppInitializer {
+class AppInitialiser {
   constructor() {
     this.loadingScreen = null;
     this.visualiser = null;
@@ -369,5 +369,5 @@ class AppInitializer {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  window.app = new AppInitializer();
+  window.app = new AppInitialiser();
 });

@@ -69,7 +69,7 @@ class AlgorithmVisualiser {
 
     const containerWidth = this.barsContainer.offsetWidth;
     const minBarWidth = 20;
-    const maxBarWidth = 50;
+    const maxBarWidth = 30;
     const maxBars = Math.floor(containerWidth / minBarWidth);
     const displayedArray = this.array.slice(0, maxBars);
 
@@ -353,7 +353,7 @@ class LoadingScreen {
   }
 }
 
-class AppInitialiser {
+class AppInitializer {
   constructor() {
     this.loadingScreen = null;
     this.visualiser = null;
@@ -369,5 +369,5 @@ class AppInitialiser {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  window.app = new AppInitialiser();
+  window.app = new AppInitializer();
 });

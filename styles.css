@@ -22,7 +22,6 @@ body {
   padding: 20px;
   background-color: var(--light-mode-background);
   overflow: hidden;
-  font-family: "Helvetica Neue";
 }
 
 h1 {

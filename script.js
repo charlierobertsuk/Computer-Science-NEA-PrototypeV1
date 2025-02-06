@@ -353,7 +353,7 @@ class LoadingScreen {
   }
 }
 
-class AppInitializer {
+class AppInitialiser {
   constructor() {
     this.loadingScreen = null;
     this.visualiser = null;
@@ -368,6 +368,9 @@ class AppInitializer {
   }
 }
 
+
+// NOTE: it needs rules. there are only 3 tabs. none can overlap, one half, and 2 quarters filled at all times. (overlapping still a problem)
+// Add a small box at the bottem right of each tab where they can be dragged. Also show the areas where the window will snap to a quarter or half
 document.addEventListener("DOMContentLoaded", () => {
   const snapThreshold = 50;
 
@@ -450,5 +453,5 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  window.app = new AppInitializer();
+  window.app = new AppInitialiser();
 });

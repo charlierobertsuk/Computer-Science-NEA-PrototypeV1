@@ -369,5 +369,86 @@ class AppInitializer {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  const snapThreshold = 50;
+
+  document.querySelectorAll(".tab").forEach((tab) => {
+    tab.addEventListener("mousedown", (e) => {
+      const rect = tab.getBoundingClientRect();
+      const offsetX = e.clientX - rect.left;
+      const offsetY = e.clientY - rect.top;
+
+      function onMouseMove(event) {
+        const x = event.clientX - offsetX;
+        const y = event.clientY - offsetY;
+        tab.style.left = `${x}px`;
+        tab.style.top = `${y}px`;
+      }
+
+      function onMouseUp() {
+        document.removeEventListener("mousemove", onMouseMove);
+        document.removeEventListener("mouseup", onMouseUp);
+
+        snapToRegion(tab);
+      }
+
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", onMouseUp);
+    });
+  });
+
+  function snapToRegion(tab) {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const left = parseInt(tab.style.left);
+    const top = parseInt(tab.style.top);
+
+    // Top Left, Top Right, Bottem Left, Bottom Right
+    if (left < width / 2 && top < height / 2) {
+      tab.style.left = "0px";
+      tab.style.top = "0px";
+      tab.style.width = `${width / 2}px`;
+      tab.style.height = `${height / 2}px`;
+    } else if (left >= width / 2 && top < height / 2) {
+      tab.style.left = `${width / 2}px`;
+      tab.style.top = "0px";
+      tab.style.width = `${width / 2}px`;
+      tab.style.height = `${height / 2}px`;
+    } else if (left < width / 2 && top >= height / 2) {
+      tab.style.left = "0px";
+      tab.style.top = `${height / 2}px`;
+      tab.style.width = `${width / 2}px`;
+      tab.style.height = `${height / 2}px`;
+    } else {
+      tab.style.left = `${width / 2}px`;
+      tab.style.top = `${height / 2}px`;
+      tab.style.width = `${width / 2}px`;
+      tab.style.height = `${height / 2}px`;
+    }
+
+    // Left & Right Halfw
+    if (Math.abs(left) < snapThreshold) {
+      tab.style.left = "0px";
+      tab.style.width = `${width / 2}px`;
+      tab.style.height = `${height}px`;
+    } else if (Math.abs(left - width / 2) < snapThreshold) {
+      tab.style.left = `${width / 2}px`;
+      tab.style.width = `${width / 2}px`;
+      tab.style.height = `${height}px`;
+    }
+
+    // Top half, Bottem Half
+    if (Math.abs(top) < snapThreshold) {
+      tab.style.top = "0px";
+      tab.style.width = `${width}px`;
+      tab.style.height = `${height / 2}px`;
+    } else if (Math.abs(top - height / 2) < snapThreshold) {
+      tab.style.top = `${height / 2}px`;
+      tab.style.width = `${width}px`;
+      tab.style.height = `${height / 2}px`;
+    }
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
   window.app = new AppInitializer();
 });

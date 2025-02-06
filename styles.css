@@ -155,3 +155,41 @@ h1 {
 .loading-bar.is-sorted {
   background-color: var(--sorted-state);
 }
+
+.tab-system {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.tab {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  overflow: auto;
+  resize: both;
+  z-index: 1;
+  cursor: grab;
+}
+
+.tab:active {
+  cursor: grabbing;
+}
+
+.visualiser-tab {
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.control-panel-tab {
+  top: 50%;
+  left: 50;
+}
+
+.code-display-tab {
+  top: 50%;
+  left: 50%;
+}

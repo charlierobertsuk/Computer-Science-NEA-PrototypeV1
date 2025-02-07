@@ -8,18 +8,31 @@ class AlgorithmVisualiser {
     this.comparisons = 0;
     this.swaps = 0;
     this.animationSpeed = 100;
+    this.defaultSize = 16;
 
     // DOM elements
     this.barsContainer = document.getElementById("bars-container");
     this.algorithmSelect = document.getElementById("algorithm-select");
     this.arraySizeInput = document.getElementById("array-size");
     this.speedInput = document.getElementById("animation-speed");
-    this.generateButton = document.getElementById("generate-array");
     this.restoreButton = document.getElementById("restore-array");
     this.startButton = document.getElementById("start");
+    this.sizeButtons = {
+      small: document.getElementById("size-small"),
+      medium: document.getElementById("size-medium"),
+      large: document.getElementById("size-large"),
+    };
 
     // Event listeners
-    this.generateButton.addEventListener("click", () => this.generateArray());
+    this.sizeButtons.small.addEventListener("click", () =>
+      this.generateArray(8)
+    );
+    this.sizeButtons.medium.addEventListener("click", () =>
+      this.generateArray(16)
+    );
+    this.sizeButtons.large.addEventListener("click", () =>
+      this.generateArray(32)
+    );
     this.startButton.addEventListener("click", () => this.startSorting());
     this.restoreButton.addEventListener("click", () => this.restoreArray());
     window.addEventListener("resize", () => this.renderBars());
@@ -28,18 +41,15 @@ class AlgorithmVisualiser {
       this.animationSpeed = 501 - e.target.value;
     });
 
-    this.generateArray();
+    this.generateArray(this.defaultSize);
   }
 
-  generateArray() {
-    const size = parseInt(this.arraySizeInput.value);
+  generateArray(size) {
+    if (this.isRunning) return;
     const uniqueNumbers = new Set();
-
     while (uniqueNumbers.size < size) {
-      const ranNum = Math.floor(Math.random() * 99) + 1;
-      uniqueNumbers.add(ranNum);
+      uniqueNumbers.add(Math.floor(Math.random() * 99) + 1);
     }
-
     this.array = Array.from(uniqueNumbers);
     this.originalArray = [...this.array];
     this.renderBars();
@@ -57,9 +67,9 @@ class AlgorithmVisualiser {
 
   finishSorting() {
     this.isRunning = false;
-    this.generateButton.disabled = false;
+    this.toggleButtons(true);
+    this.startButton.disabled = true;
     this.bars.forEach((bar) => bar.classList.add("is-sorted"));
-    this.restoreButton.disabled = false;
   }
 
   renderBars() {
@@ -106,8 +116,7 @@ class AlgorithmVisualiser {
   async startSorting() {
     if (this.isRunning) return;
     this.isRunning = true;
-    this.startButton.disabled = true;
-    this.generateButton.disabled = true;
+    this.toggleButtons(false);
 
     switch (this.algorithmSelect.value) {
       case "bubble":
@@ -122,6 +131,14 @@ class AlgorithmVisualiser {
     }
 
     this.finishSorting();
+  }
+
+  toggleButtons(enable) {
+    Object.values(this.sizeButtons).forEach(
+      (button) => (button.disabled = !enable)
+    );
+    this.startButton.disabled = !enable;
+    this.restoreButton.disabled = enable;
   }
 
   async bubbleSort() {
@@ -278,8 +295,8 @@ class AlgorithmVisualiser {
     document.getElementById("comparisons").textContent = "0";
     document.getElementById("swaps").textContent = "0";
     this.startButton.disabled = false;
-    this.generateButton.disabled = false;
     this.restoreButton.disabled = true;
+    this.toggleButtons(true);
     this.bars.forEach((bar) =>
       bar.classList.remove("is-comparing", "is-sorted", "is-pivot")
     );

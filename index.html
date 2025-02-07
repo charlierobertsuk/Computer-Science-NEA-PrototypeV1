@@ -36,17 +36,19 @@
         <div class="tab control-panel-tab">
           <div class="control-panel">
             <div class="inputs">
-              <label for="input">Array Size</label>
-              <input
-                type="number"
-                id="array-size"
-                class="input-field"
-                min="5"
-                max="50"
-                value="12"
-                placeholder="Array size"
-              />
-              <label for="input">Speed</label>
+              <label for="array-size">Array Size</label>
+              <div class="size-buttons">
+                <button id="size-small" class="btn size-btn" data-size="8">
+                  Small - 8
+                </button>
+                <button id="size-medium" class="btn size-btn" data-size="16">
+                  Medium - 16
+                </button>
+                <button id="size-large" class="btn size-btn" data-size="32">
+                  Large - 32
+                </button>
+              </div>
+              <label for="animation-speed">Speed</label>
               <input
                 type="range"
                 id="animation-speed"
@@ -54,15 +56,14 @@
                 min="1"
                 max="500"
                 value="400"
-                placeholder="Speed in ms"
               />
             </div>
+
             <select id="algorithm-select" class="input-field">
               <option value="bubble">Bubble Sort</option>
               <option value="merge">Merge Sort</option>
               <option value="quick">Quick Sort</option>
             </select>
-            <button id="generate-array" class="btn">Generate New Array</button>
             <button id="start" class="btn">Start Sorting</button>
             <button id="restore-array" class="btn" disabled>
               Restore Array

@@ -23,10 +23,10 @@ class AlgorithmVisualiser {
     this.startButton.addEventListener("click", () => this.startSorting());
     this.restoreButton.addEventListener("click", () => this.restoreArray());
     window.addEventListener("resize", () => this.renderBars());
-    this.speedInput.addEventListener(
-      "change",
-      (e) => (this.animationSpeed = e.target.value)
-    );
+    this.speedInput.addEventListener("change", (e) => {
+      // 501 makes it faster cos the range needed to be inverted
+      this.animationSpeed = 501 - e.target.value;
+    });
 
     this.generateArray();
   }
@@ -368,88 +368,116 @@ class AppInitialiser {
   }
 }
 
-
-// NOTE: it needs rules. there are only 3 tabs. none can overlap, one half, and 2 quarters filled at all times. (overlapping still a problem)
-// Add a small box at the bottem right of each tab where they can be dragged. Also show the areas where the window will snap to a quarter or half
 document.addEventListener("DOMContentLoaded", () => {
-  const snapThreshold = 50;
+  const tabs = document.querySelectorAll(".tab");
+  const visualiserTab = document.querySelector(".visualiser-tab");
+  const controlPanelTab = document.querySelector(".control-panel-tab");
+  const codeDisplayTab = document.querySelector(".code-display-tab");
 
-  document.querySelectorAll(".tab").forEach((tab) => {
-    tab.addEventListener("mousedown", (e) => {
-      const rect = tab.getBoundingClientRect();
-      const offsetX = e.clientX - rect.left;
-      const offsetY = e.clientY - rect.top;
-
-      function onMouseMove(event) {
-        const x = event.clientX - offsetX;
-        const y = event.clientY - offsetY;
-        tab.style.left = `${x}px`;
-        tab.style.top = `${y}px`;
-      }
-
-      function onMouseUp() {
-        document.removeEventListener("mousemove", onMouseMove);
-        document.removeEventListener("mouseup", onMouseUp);
-
-        snapToRegion(tab);
-      }
-
-      document.addEventListener("mousemove", onMouseMove);
-      document.addEventListener("mouseup", onMouseUp);
-    });
-  });
-
-  function snapToRegion(tab) {
+  function setupTabInteraction() {
     const width = window.innerWidth;
     const height = window.innerHeight;
-    const left = parseInt(tab.style.left);
-    const top = parseInt(tab.style.top);
 
-    // Top Left, Top Right, Bottem Left, Bottom Right
-    if (left < width / 2 && top < height / 2) {
-      tab.style.left = "0px";
-      tab.style.top = "0px";
-      tab.style.width = `${width / 2}px`;
-      tab.style.height = `${height / 2}px`;
-    } else if (left >= width / 2 && top < height / 2) {
-      tab.style.left = `${width / 2}px`;
-      tab.style.top = "0px";
-      tab.style.width = `${width / 2}px`;
-      tab.style.height = `${height / 2}px`;
-    } else if (left < width / 2 && top >= height / 2) {
-      tab.style.left = "0px";
-      tab.style.top = `${height / 2}px`;
-      tab.style.width = `${width / 2}px`;
-      tab.style.height = `${height / 2}px`;
-    } else {
-      tab.style.left = `${width / 2}px`;
-      tab.style.top = `${height / 2}px`;
-      tab.style.width = `${width / 2}px`;
-      tab.style.height = `${height / 2}px`;
-    }
+    // reset all initial positions
+    visualiserTab.style.left = "0";
+    visualiserTab.style.top = "0";
+    visualiserTab.style.width = "100%";
+    visualiserTab.style.height = `${height / 2}px`;
 
-    // Left & Right Halfw
-    if (Math.abs(left) < snapThreshold) {
-      tab.style.left = "0px";
-      tab.style.width = `${width / 2}px`;
-      tab.style.height = `${height}px`;
-    } else if (Math.abs(left - width / 2) < snapThreshold) {
-      tab.style.left = `${width / 2}px`;
-      tab.style.width = `${width / 2}px`;
-      tab.style.height = `${height}px`;
-    }
+    controlPanelTab.style.left = "0";
+    controlPanelTab.style.top = `${height / 2}px`;
+    controlPanelTab.style.width = "50%";
+    controlPanelTab.style.height = `${height / 2}px`;
 
-    // Top half, Bottem Half
-    if (Math.abs(top) < snapThreshold) {
-      tab.style.top = "0px";
-      tab.style.width = `${width}px`;
-      tab.style.height = `${height / 2}px`;
-    } else if (Math.abs(top - height / 2) < snapThreshold) {
-      tab.style.top = `${height / 2}px`;
-      tab.style.width = `${width}px`;
-      tab.style.height = `${height / 2}px`;
-    }
+    codeDisplayTab.style.left = "50%";
+    codeDisplayTab.style.top = `${height / 2}px`;
+    codeDisplayTab.style.width = "50%";
+    codeDisplayTab.style.height = `${height / 2}px`;
+
+    tabs.forEach((tab) => {
+      const existingButton = tab.querySelector(".tab-focus-btn");
+      if (existingButton) {
+        existingButton.remove();
+      }
+
+      const focusButton = document.createElement("button");
+      focusButton.textContent = "Focus";
+      focusButton.classList.add("tab-focus-btn");
+      focusButton.style.position = "absolute";
+      focusButton.style.top = "10px";
+      focusButton.style.right = "10px";
+
+      const isInTopHalf =
+        tab.style.top === "0px" && tab.style.height === `${height / 2}px`;
+      focusButton.style.display = isInTopHalf ? "none" : "block";
+
+      tab.appendChild(focusButton);
+
+      focusButton.addEventListener("click", () => {
+        if (tab.style.top === "0px" && tab.style.height === `${height / 2}px`) {
+          setupTabInteraction();
+          return;
+        }
+
+        tabs.forEach((t) => {
+          const button = t.querySelector(".tab-focus-btn");
+          button.style.display = "block";
+        });
+
+        focusButton.style.display = "none";
+
+        if (tab === visualiserTab) {
+          visualiserTab.style.left = "0";
+          visualiserTab.style.top = "0";
+          visualiserTab.style.width = "100%";
+          visualiserTab.style.height = `${height / 2}px`;
+
+          controlPanelTab.style.left = "0";
+          controlPanelTab.style.top = `${height / 2}px`;
+          controlPanelTab.style.width = "50%";
+          controlPanelTab.style.height = `${height / 2}px`;
+
+          codeDisplayTab.style.left = "50%";
+          codeDisplayTab.style.top = `${height / 2}px`;
+          codeDisplayTab.style.width = "50%";
+          codeDisplayTab.style.height = `${height / 2}px`;
+        } else if (tab === controlPanelTab) {
+          controlPanelTab.style.left = "0";
+          controlPanelTab.style.top = "0";
+          controlPanelTab.style.width = "100%";
+          controlPanelTab.style.height = `${height / 2}px`;
+
+          visualiserTab.style.left = "0";
+          visualiserTab.style.top = `${height / 2}px`;
+          visualiserTab.style.width = "50%";
+          visualiserTab.style.height = `${height / 2}px`;
+
+          codeDisplayTab.style.left = "50%";
+          codeDisplayTab.style.top = `${height / 2}px`;
+          codeDisplayTab.style.width = "50%";
+          codeDisplayTab.style.height = `${height / 2}px`;
+        } else if (tab === codeDisplayTab) {
+          codeDisplayTab.style.left = "0";
+          codeDisplayTab.style.top = "0";
+          codeDisplayTab.style.width = "100%";
+          codeDisplayTab.style.height = `${height / 2}px`;
+
+          visualiserTab.style.left = "0";
+          visualiserTab.style.top = `${height / 2}px`;
+          visualiserTab.style.width = "50%";
+          visualiserTab.style.height = `${height / 2}px`;
+
+          controlPanelTab.style.left = "50%";
+          controlPanelTab.style.top = `${height / 2}px`;
+          controlPanelTab.style.width = "50%";
+          controlPanelTab.style.height = `${height / 2}px`;
+        }
+      });
+    });
   }
+
+  setupTabInteraction();
+  window.addEventListener("resize", setupTabInteraction);
 });
 
 document.addEventListener("DOMContentLoaded", () => {

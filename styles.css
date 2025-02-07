@@ -75,18 +75,6 @@ h1 {
   background-color: var(--pivot);
 }
 
-.inputs {
-  display: flex;
-  flex-direction: column;
-}
-
-.input-field {
-  padding: 8px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
 .btn {
   margin: 5px;
   padding: 8px 16px;
@@ -214,4 +202,17 @@ h1 {
 
 .tab-focus-btn:hover {
   background-color: var(--button-pressed);
+}
+
+.input-field {
+  padding: 8px;
+  border: solid 0px;
+  border-radius: 4px;
+  font-size: 16px;
+  text-align: center;
+}
+
+input {
+  width: 100%;
+  cursor: pointer;
 }

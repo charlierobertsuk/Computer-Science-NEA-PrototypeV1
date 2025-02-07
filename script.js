@@ -15,7 +15,6 @@ class AlgorithmVisualiser {
     this.algorithmSelect = document.getElementById("algorithm-select");
     this.arraySizeInput = document.getElementById("array-size");
     this.speedInput = document.getElementById("animation-speed");
-    this.restoreButton = document.getElementById("restore-array");
     this.startButton = document.getElementById("start");
     this.sizeButtons = {
       small: document.getElementById("size-small"),
@@ -24,21 +23,16 @@ class AlgorithmVisualiser {
     };
 
     // Event listeners
-    this.sizeButtons.small.addEventListener("click", () =>
-      this.generateArray(8)
-    );
-    this.sizeButtons.medium.addEventListener("click", () =>
-      this.generateArray(16)
-    );
-    this.sizeButtons.large.addEventListener("click", () =>
-      this.generateArray(32)
-    );
     this.startButton.addEventListener("click", () => this.startSorting());
-    this.restoreButton.addEventListener("click", () => this.restoreArray());
     window.addEventListener("resize", () => this.renderBars());
     this.speedInput.addEventListener("change", (e) => {
-      // 501 makes it faster cos the range needed to be inverted
       this.animationSpeed = 501 - e.target.value;
+    });
+    const sizes = { small: 8, medium: 16, large: 32 }; // im so clever for this
+    Object.keys(this.sizeButtons).forEach((key) => {
+      this.sizeButtons[key].addEventListener("click", () =>
+        this.generateArray(sizes[key])
+      );
     });
 
     this.generateArray(this.defaultSize);
@@ -54,15 +48,6 @@ class AlgorithmVisualiser {
     this.originalArray = [...this.array];
     this.renderBars();
     this.reset();
-  }
-
-  restoreArray() {
-    if (!this.isRunning) {
-      this.array = [...this.originalArray];
-      this.renderBars();
-      this.reset();
-      this.restoreButton.disabled = true;
-    }
   }
 
   finishSorting() {
@@ -84,33 +69,51 @@ class AlgorithmVisualiser {
     const displayedArray = this.array.slice(0, maxBars);
 
     displayedArray.forEach((value) => {
-      const barContainer = document.createElement("div");
-      barContainer.className = "bar-container";
-
-      const bar = document.createElement("div");
-      bar.className = "sorting-bar";
-
-      const barWidth = Math.min(
-        Math.max(containerWidth / displayedArray.length - 2, minBarWidth),
+      const barContainer = this.createBarContainer(
+        value,
+        containerWidth,
+        displayedArray.length,
+        minBarWidth,
         maxBarWidth
       );
-      bar.style.height = `${value * 2}px`;
-      bar.style.width = `${barWidth}px`;
-
-      const numberLabel = document.createElement("div");
-      numberLabel.className = "number-label";
-      numberLabel.textContent = `${value}`;
-
-      const fontSize = Math.min(barWidth * 0.6, 18);
-      numberLabel.style.fontSize = `${Math.max(fontSize, 12)}px`;
-
-      barContainer.appendChild(bar);
-      barContainer.appendChild(numberLabel);
       this.barsContainer.appendChild(barContainer);
-
-      this.bars.push(bar);
-      this.numbers.push(numberLabel);
     });
+  }
+
+  createBarContainer(
+    value,
+    containerWidth,
+    displayedArrayLength,
+    minBarWidth,
+    maxBarWidth
+  ) {
+    const barContainer = document.createElement("div");
+    barContainer.className = "bar-container";
+
+    const bar = document.createElement("div");
+    bar.className = "sorting-bar";
+
+    const barWidth = Math.min(
+      Math.max(containerWidth / displayedArrayLength - 2, minBarWidth),
+      maxBarWidth
+    );
+    bar.style.height = `${value * 2}px`;
+    bar.style.width = `${barWidth}px`;
+
+    const numberLabel = document.createElement("div");
+    numberLabel.className = "number-label";
+    numberLabel.textContent = `${value}`;
+    numberLabel.style.fontSize = `${Math.max(
+      Math.min(barWidth * 0.6, 18),
+      12
+    )}px`;
+
+    barContainer.appendChild(bar);
+    barContainer.appendChild(numberLabel);
+
+    this.bars.push(bar);
+    this.numbers.push(numberLabel);
+    return barContainer;
   }
 
   async startSorting() {
@@ -138,28 +141,31 @@ class AlgorithmVisualiser {
       (button) => (button.disabled = !enable)
     );
     this.startButton.disabled = !enable;
-    this.restoreButton.disabled = enable;
   }
 
   async bubbleSort() {
     for (let i = 0; i < this.array.length; i++) {
       for (let j = 0; j < this.array.length - i - 1; j++) {
-        this.bars[j].classList.add("is-comparing");
-        this.bars[j + 1].classList.add("is-comparing");
-        await this.wait();
-
-        this.comparisons++;
-        document.getElementById("comparisons").textContent = this.comparisons;
-
-        if (this.array[j] > this.array[j + 1]) {
-          await this.swap(j, j + 1);
-        }
-
-        this.bars[j].classList.remove("is-comparing");
-        this.bars[j + 1].classList.remove("is-comparing");
+        await this.compareAndSwap(j, j + 1);
       }
       this.bars[this.array.length - i - 1].classList.add("is-sorted");
     }
+  }
+
+  async compareAndSwap(i, j) {
+    this.bars[i].classList.add("is-comparing");
+    this.bars[j].classList.add("is-comparing");
+    await this.wait();
+
+    this.comparisons++;
+    document.getElementById("comparisons").textContent = this.comparisons;
+
+    if (this.array[i] > this.array[j]) {
+      await this.swap(i, j);
+    }
+
+    this.bars[i].classList.remove("is-comparing");
+    this.bars[j].classList.remove("is-comparing");
   }
 
   async mergeSort(left, right) {
@@ -180,7 +186,6 @@ class AlgorithmVisualiser {
       j = 0,
       k = left;
 
-    // Move bars upward
     tempBars.forEach((bar) => (bar.style.transform = "translateY(-10px)"));
     await this.wait();
 
@@ -218,15 +223,14 @@ class AlgorithmVisualiser {
       k++;
     }
 
-    // moves bars back to original pos
     tempBars.forEach((bar) => (bar.style.transform = "translateY(0)"));
     tempBars.forEach((bar) => bar.classList.add("is-sorted"));
     await this.wait();
   }
 
-  updateBar(index) {
-    this.bars[index].style.height = `${this.array[index] * 2}px`;
-    this.numbers[index].textContent = this.array[index];
+  updateBar(index, newIndex) {
+    this.bars[index].style.height = `${this.array[newIndex] * 2}px`;
+    this.numbers[index].textContent = this.array[newIndex];
   }
 
   async swap(i, j) {
@@ -295,7 +299,6 @@ class AlgorithmVisualiser {
     document.getElementById("comparisons").textContent = "0";
     document.getElementById("swaps").textContent = "0";
     this.startButton.disabled = false;
-    this.restoreButton.disabled = true;
     this.toggleButtons(true);
     this.bars.forEach((bar) =>
       bar.classList.remove("is-comparing", "is-sorted", "is-pivot")
@@ -305,14 +308,9 @@ class AlgorithmVisualiser {
 
 class LoadingScreen {
   constructor(onComplete) {
-    this.bars = [];
     this.container = document.getElementById("loading-bars");
     this.onComplete = onComplete;
     this.createBars();
-  }
-
-  startAnimation() {
-    this.animateBubbleSort();
   }
 
   createBars() {
@@ -345,7 +343,6 @@ class LoadingScreen {
       }
       this.barElements[this.bars.length - i - 1].classList.add("is-sorted");
     }
-
     this.hideLoadingScreen();
   }
 
@@ -381,7 +378,7 @@ class AppInitialiser {
     this.loadingScreen = new LoadingScreen(() => {
       this.visualiser = new AlgorithmVisualiser();
     });
-    this.loadingScreen.startAnimation();
+    this.loadingScreen.animateBubbleSort();
   }
 }
 
@@ -392,8 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const codeDisplayTab = document.querySelector(".code-display-tab");
 
   function setupTabInteraction() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const height = window.innerHeight; // width variable unused and unloved. RIP
 
     // reset all initial positions
     visualiserTab.style.left = "0";

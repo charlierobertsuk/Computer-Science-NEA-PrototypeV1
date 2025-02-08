@@ -9,6 +9,7 @@ class AlgorithmVisualiser {
     this.swaps = 0;
     this.animationSpeed = 100;
     this.defaultSize = 16;
+    this.codeDisplay = new CodeDisplay(".code-display");
 
     // DOM elements
     this.barsContainer = document.getElementById("bars-container");
@@ -25,6 +26,9 @@ class AlgorithmVisualiser {
     // Event listeners
     this.startButton.addEventListener("click", () => this.startSorting());
     window.addEventListener("resize", () => this.renderBars());
+    this.algorithmSelect.addEventListener("change", (e) => {
+      this.codeDisplay.updateCode(e.target.value);
+    });
     this.speedInput.addEventListener("change", (e) => {
       this.animationSpeed = 501 - e.target.value;
     });
@@ -36,6 +40,11 @@ class AlgorithmVisualiser {
     });
 
     this.generateArray(this.defaultSize);
+  }
+
+  async updateCodeLine(lineNumber) {
+    this.codeDisplay.updateCode(this.algorithmSelect.value, lineNumber);
+    await this.wait();
   }
 
   generateArray(size) {
@@ -144,8 +153,12 @@ class AlgorithmVisualiser {
   }
 
   async bubbleSort() {
+    await this.updateCodeLine(0);
     for (let i = 0; i < this.array.length; i++) {
+      await this.updateCodeLine(1);
       for (let j = 0; j < this.array.length - i - 1; j++) {
+        await this.updateCodeLine(2);
+        await this.updateCodeLine(3);
         await this.compareAndSwap(j, j + 1);
       }
       this.bars[this.array.length - i - 1].classList.add("is-sorted");
@@ -161,6 +174,7 @@ class AlgorithmVisualiser {
     document.getElementById("comparisons").textContent = this.comparisons;
 
     if (this.array[i] > this.array[j]) {
+      await this.updateCodeLine(4);
       await this.swap(i, j);
     }
 
@@ -186,6 +200,7 @@ class AlgorithmVisualiser {
       j = 0,
       k = left;
 
+    // Move bars upward
     tempBars.forEach((bar) => (bar.style.transform = "translateY(-10px)"));
     await this.wait();
 
@@ -223,14 +238,15 @@ class AlgorithmVisualiser {
       k++;
     }
 
+    // moves bars back to original pos
     tempBars.forEach((bar) => (bar.style.transform = "translateY(0)"));
     tempBars.forEach((bar) => bar.classList.add("is-sorted"));
     await this.wait();
   }
 
-  updateBar(index, newIndex) {
-    this.bars[index].style.height = `${this.array[newIndex] * 2}px`;
-    this.numbers[index].textContent = this.array[newIndex];
+  updateBar(index) {
+    this.bars[index].style.height = `${this.array[index] * 2}px`;
+    this.numbers[index].textContent = this.array[index];
   }
 
   async swap(i, j) {
@@ -379,6 +395,116 @@ class AppInitialiser {
       this.visualiser = new AlgorithmVisualiser();
     });
     this.loadingScreen.animateBubbleSort();
+  }
+}
+
+class CodeDisplay {
+  constructor(containerId) {
+    this.container = document.querySelector(containerId);
+    this.currentAlgorithm = "bubble";
+    this.currentLine = -1;
+    this.activeTab = "javascript";
+    this.codeContainer = null;
+    this.tabButtons = new Map();
+
+    this.codeImplementations = {
+      bubble: {
+        javascript: `BubbleSort(array) {
+  for i -> 0 to arrayLength 
+    for j -> 0 to (arrayLength - i - 1)
+      if arr[j] > arr[j + 1]
+        swap(arr[j], arr[j + 1])
+}`,
+        python: `def bubble_sort(arr):
+  for n in range(len(arr) - 1, 0, -1):
+    swapped = False  
+      for i in range(n):
+          if arr[i] > arr[i + 1]:
+              arr[i], arr[i + 1] = arr[i + 1], arr[i]
+              swapped = True`,
+      },
+    };
+
+    this.init();
+  }
+
+  init() {
+    this.container.innerHTML = "Look at the cool code, yellow go brrr";
+    this.createTabsUI();
+    this.updateCodeDisplay();
+  }
+
+  createTabsUI() {
+    const tabsContainer = document.createElement("div");
+    tabsContainer.className = "code-tabs";
+
+    const tabsList = document.createElement("div");
+    tabsList.className = "tabs-list";
+
+    ["javascript", "python"].forEach((lang) => {
+      // add to the list to add a tab
+      const tab = document.createElement("button");
+      tab.className = `tab-button ${lang === this.activeTab ? "active" : ""}`;
+      tab.textContent = lang.charAt(0).toUpperCase() + lang.slice(1);
+      tab.addEventListener("click", () => this.switchTab(lang));
+      this.tabButtons.set(lang, tab);
+      tabsList.appendChild(tab);
+    });
+
+    this.codeContainer = document.createElement("div");
+    this.codeContainer.className = "code-container";
+
+    tabsContainer.appendChild(tabsList);
+    tabsContainer.appendChild(this.codeContainer);
+    this.container.appendChild(tabsContainer);
+  }
+
+  switchTab(lang) {
+    if (this.activeTab === lang) return;
+
+    this.activeTab = lang;
+    this.tabButtons.forEach((button, key) => {
+      button.classList.toggle("active", key === lang);
+    });
+    this.updateCodeDisplay();
+  }
+
+  updateCode(algorithm, lineNumber = -1) {
+    this.currentAlgorithm = algorithm;
+    this.currentLine = lineNumber;
+    this.updateCodeDisplay();
+  }
+
+  updateCodeDisplay() {
+    if (!this.codeContainer) return;
+
+    const code =
+      this.codeImplementations[this.currentAlgorithm]?.[this.activeTab];
+
+    const lines = code.split("\n");
+
+    this.codeContainer.innerHTML = "";
+    const pre = document.createElement("pre");
+    const codeElement = document.createElement("code");
+    codeElement.className = `language`;
+
+    lines.forEach((line, index) => {
+      const lineDiv = document.createElement("div");
+      lineDiv.className = "code-line";
+      if (index === this.currentLine) {
+        lineDiv.classList.add("current-line");
+      }
+      lineDiv.textContent = line;
+      codeElement.appendChild(lineDiv);
+    });
+
+    pre.appendChild(codeElement);
+    this.codeContainer.appendChild(pre);
+  }
+
+  destroy() {
+    this.tabButtons.clear();
+    this.container.innerHTML = "";
   }
 }
 

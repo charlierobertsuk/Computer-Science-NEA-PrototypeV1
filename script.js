@@ -565,6 +565,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         focusButton.style.display = "none";
 
+        // remove the duplications!
         if (tab === visualiserTab) {
           visualiserTab.style.left = "0";
           visualiserTab.style.top = "0";

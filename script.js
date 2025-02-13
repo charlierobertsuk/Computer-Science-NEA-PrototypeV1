@@ -429,7 +429,6 @@ class CodeDisplay {
   }
 
   init() {
-    this.container.innerHTML = "Look at the cool code, yellow go brrr";
     this.createTabsUI();
     this.updateCodeDisplay();
   }
@@ -504,7 +503,6 @@ class CodeDisplay {
 
   destroy() {
     this.tabButtons.clear();
-    this.container.innerHTML = "";
   }
 }
 

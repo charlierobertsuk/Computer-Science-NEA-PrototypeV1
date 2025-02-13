@@ -30,6 +30,7 @@ h1 {
 
 .app-container {
   max-width: none;
+  height: 95vh;
   overflow: auto;
 }
 
@@ -40,6 +41,8 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  justify-content: center;
+  align-items: center;
 }
 
 .sorting-container {
@@ -49,9 +52,8 @@ h1 {
 
 .bars-wrapper {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-end; /* Align center does a funny (flex-end = norm) */
   justify-content: center;
-  height: 225px;
   padding: 10px;
   gap: 5px;
   flex-wrap: nowrap;
@@ -152,45 +154,24 @@ h1 {
 
 .tab {
   position: absolute;
-  width: 50%;
-  height: 50%;
   border: 1px solid #ccc;
   background-color: #f0f0f0;
   z-index: 1;
 }
 
 .tab-content {
-  padding: 20px;
-  height: 100%;
   overflow: auto;
   position: relative;
 }
 
-.visualiser-tab {
-  top: 0;
-  left: 0;
-  width: 100%;
-}
-
-.control-panel-tab {
-  top: 50%;
-  left: 50;
-}
-
-.code-display-tab {
-  top: 50%;
-  left: 50%;
-}
-
 .code-display {
-  height: 100%;
   overflow: auto;
 }
 
 .tab-focus-btn {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 5px;
+  right: 5px;
   background-color: var(--button);
   color: white;
   border: none;
@@ -226,7 +207,8 @@ input {
 .code-tabs {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
 .tabs-list {
@@ -235,6 +217,7 @@ input {
   background-color: #e9ecef;
   padding: 8px 8px 0;
   border-radius: 8px 8px 0 0;
+  width: 400px;
 }
 
 .tab-button {
@@ -262,11 +245,11 @@ input {
   border-radius: 0 0 8px 8px;
   overflow: auto;
   padding: 10px;
+  width: 400px;
 }
 
 .code-line {
-  padding: 2px 8px;
-  white-space: pre;
+  padding: 1px 4px;
 }
 
 .current-line {
@@ -274,14 +257,15 @@ input {
   border-radius: 4px;
 }
 
-pre {
-  margin: 0;
-  padding: 16px;
-  border-radius: 4px;
-}
-
 code {
   display: block;
   line-height: 1.5;
+  font-size: 90%;
   color: green;
 }
+
+/*
+Mobile:
+Typical screen widths: 320, 360, 375, 414, and 768 pixels.
+Typical screen heights: 480, 640, 667, 736, and 1024 pixels.
+*/

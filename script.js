@@ -596,7 +596,6 @@ document.addEventListener("DOMContentLoaded", () => {
           );
         };
 
-        // Usage
         setLayout(tab);
       });
     });

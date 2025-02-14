@@ -564,53 +564,40 @@ document.addEventListener("DOMContentLoaded", () => {
         focusButton.style.display = "none";
         const halfHeight = height / 2;
 
-        // remove the duplications!
-        if (tab === visualiserTab) {
-          visualiserTab.style.left = "0";
-          visualiserTab.style.top = "0";
-          visualiserTab.style.width = "100%";
-          visualiserTab.style.height = `${halfHeight}px`;
+        const setTabStyle = (tab, left, top, width, height) => {
+          tab.style.left = left;
+          tab.style.top = top;
+          tab.style.width = width;
+          tab.style.height = height;
+        };
 
-          controlPanelTab.style.left = "0";
-          controlPanelTab.style.top = `${halfHeight}px`;
-          controlPanelTab.style.width = "50%";
-          controlPanelTab.style.height = `${halfHeight}px`;
+        const setLayout = (activeTab) => {
+          setTabStyle(activeTab, "0", "0", "100%", `${halfHeight}px`);
 
-          codeDisplayTab.style.left = "50%";
-          codeDisplayTab.style.top = `${halfHeight}px`;
-          codeDisplayTab.style.width = "50%";
-          codeDisplayTab.style.height = `${halfHeight}px`;
-        } else if (tab === controlPanelTab) {
-          controlPanelTab.style.left = "0";
-          controlPanelTab.style.top = "0";
-          controlPanelTab.style.width = "100%";
-          controlPanelTab.style.height = `${halfHeight}px`;
+          const bottomTabs = [
+            visualiserTab,
+            controlPanelTab,
+            codeDisplayTab,
+          ].filter((tab) => tab !== activeTab);
 
-          visualiserTab.style.left = "0";
-          visualiserTab.style.top = `${halfHeight}px`;
-          visualiserTab.style.width = "50%";
-          visualiserTab.style.height = `${halfHeight}px`;
+          setTabStyle(
+            bottomTabs[0],
+            "0",
+            `${halfHeight}px`,
+            "50%",
+            `${halfHeight}px`
+          );
+          setTabStyle(
+            bottomTabs[1],
+            "50%",
+            `${halfHeight}px`,
+            "50%",
+            `${halfHeight}px`
+          );
+        };
 
-          codeDisplayTab.style.left = "50%";
-          codeDisplayTab.style.top = `${halfHeight}px`;
-          codeDisplayTab.style.width = "50%";
-          codeDisplayTab.style.height = `${halfHeight}px`;
-        } else if (tab === codeDisplayTab) {
-          codeDisplayTab.style.left = "0";
-          codeDisplayTab.style.top = "0";
-          codeDisplayTab.style.width = "100%";
-          codeDisplayTab.style.height = `${halfHeight}px`;
-
-          visualiserTab.style.left = "0";
-          visualiserTab.style.top = `${halfHeight}px`;
-          visualiserTab.style.width = "50%";
-          visualiserTab.style.height = `${halfHeight}px`;
-
-          controlPanelTab.style.left = "50%";
-          controlPanelTab.style.top = `${halfHeight}px`;
-          controlPanelTab.style.width = "50%";
-          controlPanelTab.style.height = `${halfHeight}px`;
-        }
+        // Usage
+        setLayout(tab);
       });
     });
   }

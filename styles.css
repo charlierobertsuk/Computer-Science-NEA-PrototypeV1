@@ -1,15 +1,16 @@
 :root {
   /* colour inspiration from monkeytype */
-  --prim-light-and-bar-unsorted: #3b82f6;
   --prim-dark: #2563eb;
   --background-prim: #0f172a;
   --background-sec: #1e293b;
   --background-terti: #334155;
   --text-prim: #f8fafc; /* will need text for light mode in near future!! */
   --text-sec: #cbd5e1;
-  --bar-comparing: #f59e0b;
-  --bar-sorted: #22c55e;
+  --comparing-bar: #f59e0b;
+  --unsorted-bar: #3b82f6;
+  --sorted-bar: #22c55e;
   --bar-pivot: #ef4444;
+  --disabled: #9ca3af;
   /* I had no idea you can put more than colours in root! */
   --THE-TRANSITION: all 0.2s ease;
 }
@@ -43,19 +44,12 @@ h1 {
 }
 
 .control-panel {
-  position: static;
-  width: auto;
-  padding: 20px;
+  background-color: var(--background-sec);
+  border-radius: 12px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  justify-content: center;
-  align-items: center;
-}
-
-.sorting-container {
-  box-shadow: none;
-  padding: 20px;
+  gap: 20px;
 }
 
 .bars-wrapper {
@@ -69,16 +63,17 @@ h1 {
 }
 
 .sorting-bar {
-  background-color: var(--prim-light-and-bar-unsorted);
+  background-color: var(--unsorted-bar);
   transition: var(--THE-TRANSITION);
+  border-radius: 10px 10px 0px 0px; /*if center or flex-start change this to 0 0 10 10 or 10 px*/
 }
 
 .sorting-bar.is-comparing {
-  background-color: var(--bar-comparing);
+  background-color: var(--comparing-bar);
 }
 
 .sorting-bar.is-sorted {
-  background-color: var(--bar-sorted);
+  background-color: var(--sorted-bar);
 }
 
 .sorting-bar.is-pivot {
@@ -86,12 +81,12 @@ h1 {
 }
 
 .btn {
-  margin: 5px;
+  margin: 15px;
   padding: 8px 16px;
   border: none;
-  border-radius: 4px;
-  background-color: var(--prim-light-and-bar-unsorted);
-  color: white;
+  border-radius: 16px;
+  background-color: var(--unsorted-bar);
+  color: var(--text-prim);
   cursor: pointer;
   font-size: 16px;
   transition: var(--THE-TRANSITION);
@@ -99,25 +94,36 @@ h1 {
 
 .btn:hover {
   background-color: var(--prim-dark);
+  transform: translateY(-8px);
 }
 
 .btn:disabled {
-  background-color: #9ca3af;
+  background-color: var(--disabled);
   cursor: not-allowed;
 }
 
 .stats-section {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  display: flex;
+  justify-content: center;
   gap: 10px;
-  margin-top: 10px;
+  margin: 10px 0 10px 0;
 }
 
 .stats-item {
-  background: white;
+  background: var(--background-prim);
   padding: 10px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 75px;
+  width: 140px;
+}
+
+.stats-item h3 {
+  color: var(--text-sec);
+  margin-bottom: 8px;
+}
+
+.stats-item p {
+  color: var(--text-prim);
 }
 
 .loading-screen {
@@ -129,7 +135,7 @@ h1 {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: white;
+  background-color: var(--background-prim);
   z-index: 9999;
 }
 
@@ -141,17 +147,18 @@ h1 {
 }
 
 .loading-bar {
-  background-color: var(--prim-light-and-bar-unsorted);
+  background-color: var(--unsorted-bar);
   width: 20px;
+  border-radius: 10px 10px 0 0;
   transition: var(--THE-TRANSITION);
 }
 
 .loading-bar.is-comparing {
-  background-color: var(--bar-comparing);
+  background-color: var(--comparing-bar);
 }
 
 .loading-bar.is-sorted {
-  background-color: var(--bar-sorted);
+  background-color: var(--sorted-bar);
 }
 
 .tab-system {
@@ -162,9 +169,14 @@ h1 {
 
 .tab {
   position: absolute;
-  border: 1px solid #ccc;
-  background-color: #f0f0f0;
-  z-index: 1;
+  border: 1px solid black;
+  background-color: var(--background-sec);
+  overflow: hidden;
+  transition: var(--THE-TRANSITION);
+}
+
+.visualiser-tab {
+  padding-top: 100px;
 }
 
 .tab-content {
@@ -173,19 +185,23 @@ h1 {
 }
 
 .code-display {
+  background-color: var(--background-sec);
+  color: var(--text-prim);
+  padding: 24px;
   overflow: auto;
 }
 
 .tab-focus-btn {
   position: absolute;
-  top: 5px;
-  right: 5px;
-  background-color: var(--prim-light-and-bar-unsorted);
+  top: 10px;
+  right: 10px;
+  background-color: var(--prim-dark);
   color: white;
   border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
+  padding: 8px 16px;
+  border-radius: 6px;
   cursor: pointer;
+  transition: var(--THE-TRANSITION);
   z-index: 2;
 }
 
@@ -199,9 +215,11 @@ h1 {
   border-radius: 4px;
   font-size: 16px;
   text-align: center;
+  background-color: var(--background-terti);
+  color: var(--text-prim);
 }
 
-input {
+input[type="range"] {
   width: 100%;
   cursor: pointer;
 }
@@ -209,20 +227,18 @@ input {
 .code-display {
   height: 100%;
   padding: 20px;
-  background-color: #f8f9fa;
+  background-color: var(--background-sec);
 }
 
 .code-tabs {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 
 .tabs-list {
-  display: flex;
   gap: 2px;
-  background-color: #e9ecef;
+  background-color: var(--background-terti);
   padding: 8px 8px 0;
   border-radius: 8px 8px 0 0;
   width: 400px;
@@ -231,7 +247,7 @@ input {
 .tab-button {
   padding: 8px 16px;
   border: none;
-  background-color: #dee2e6;
+  background-color: transparent;
   cursor: pointer;
   border-radius: 8px 8px 0 0;
   font-size: 14px;
@@ -239,29 +255,29 @@ input {
 }
 
 .tab-button:hover {
-  background-color: #f8f9fa;
+  background-color: var(--bg-secondary);
 }
 
 .tab-button.active {
-  background-color: #ffffff;
+  background-color: var(--prim-dark);
   font-weight: bold;
 }
 
 .code-container {
   flex-grow: 1;
-  background-color: var(--background-sec);
-  border-radius: 0 0 8px 8px;
+  background-color: var(--background-prim);
+  border-radius: 8px;
   overflow: auto;
   padding: 10px;
   width: 400px;
 }
 
 .code-line {
-  padding: 1px 4px;
+  padding: 4px 8px;
 }
 
 .current-line {
-  background-color: yellow;
+  background-color: rgb(255, 255, 0, 0.25);
   border-radius: 4px;
 }
 
@@ -277,3 +293,10 @@ Mobile:
 Typical screen widths: 320, 360, 375, 414, and 768 pixels.
 Typical screen heights: 480, 640, 667, 736, and 1024 pixels.
 */
+
+@media only screen and (max-width: 1000px) {
+  .size-buttons {
+    display: grid;
+    justify-content: center;
+  }
+}
